@@ -32,11 +32,11 @@ LShift & Capslock::Sb_ToggleSwitch()		;ShiftTOGGLES HEADPHONES AND SPEAKERS
 LCtrl & Capslock::Sb_Snip()					;CTRL + CAPSLOCK OPENS SNIPPING TOOL/SAVES CURRENT SNIP
 ^Right::Send, {LCtrl down}{tab}{LCtrl up}	;CTRL + RIGHT (next tab)
 ^Left::Send, {LShift down}{LCtrl down}{tab}{LCtrl up}{LShift up}	;CTRL + LEFT (prev tab)
-Capslock & f2::Run https://inbox.google.com	;Open up inbox
-Capslock & f3::Run https://play.google.com/music/listen#/now ;Open up music
-Capslock & f4::Run https://play.pocketcasts.com/web#/podcasts/new_releases ;Open up podcasts
-inbox := "https://inbox.google.com"
-Capslock & f5::Run C:\Users\Austin\AppData\Local\Google\Chrome SxS\Application\chrome.exe
+;Capslock & f2::Run https://inbox.google.com	;Open up inbox
+;Capslock & f3::Run https://play.google.com/music/listen#/now ;Open up music
+;Capslock & f4::Run https://play.pocketcasts.com/web#/podcasts/new_releases ;Open up podcasts
+;inbox := "https://inbox.google.com"
+;Capslock & f5::Run C:\Users\Austin\AppData\Local\Google\Chrome SxS\Application\chrome.exe
 ;Capslock & K::Run C:\Users\Austin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessibility\On-Screen Keyboard.lnk
 
 ;Capslock & f2::Sb_CurWinTop()
