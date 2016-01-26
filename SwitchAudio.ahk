@@ -11,12 +11,21 @@ SetBatchLines -1									;Go as fast as CPU will allow
 #include ahk-lib\VA.ahk										;VA.ahk is needed to be in the same folder as this script
 #include ahk-lib\TTS.ahk									;TTS.ahk is needed for text to speech tools
 #Persistent											;this keeps the script running if no hotkeys are set (though one is)
-#include %A_ScriptDir%\								;Load all .ahks in the same folder
-Sb_SetupTray()										;Build the sys tray
+;#include %A_ScriptDir%								;Load all .ahks in the same folder
 Global Voice := ComObjCreate("SAPI.SpVoice")		;Define the Voice variable
 Global rate := 2									;Set default rate to 2 "kinda fast"
 TTS(Voice, "SetRate", rate)							;Set default rate to 2 "kinda fast"
 TTS(Voice, "SetVoice", "Microsoft Zira Desktop")	;Change to female voice
+
+;;;;;	SETUP MENU	;;;;;
+Menu, Tray, Icon, ico\h.ico,,1					;default is headphones icon
+Menu, Tray, NoStandard						;?
+Menu, Tray, Add, &Switch Playback Device (shift+caps), LShift & Capslock	;add tray option
+Menu, Tray, Add, &Speak (highlight-caps), Capslock				;add tray option
+Menu, Tray, Add, &Suspend hotkeys/strings (caps+f1), CapsLock & f1				;add tray option
+Menu, Tray, Add, 						;add blank line
+Menu, Tray, Standard						;?
+Menu, Tray, Default, &Switch Playback Device (shift+caps)			;default option is new option
 
 ;;;;;	HOTKEYS	;;;;;
 CapsLock & f1::
@@ -29,48 +38,11 @@ Capslock & Up::Sb_VoiceFaster()				;Turn voice rate 1 faster
 Capslock & Down::Sb_VoiceSlower()			;Turn voice rate 1 slower
 !Capslock::Capslock							;ALT + CAPS IS CAPSLOCK
 LShift & Capslock::Sb_ToggleSwitch()		;ShiftTOGGLES HEADPHONES AND SPEAKERS
-LCtrl & Capslock::Sb_Snip()					;CTRL + CAPSLOCK OPENS SNIPPING TOOL/SAVES CURRENT SNIP
-^Right::Send, {LCtrl down}{tab}{LCtrl up}	;CTRL + RIGHT (next tab)
-^Left::Send, {LShift down}{LCtrl down}{tab}{LCtrl up}{LShift up}	;CTRL + LEFT (prev tab)
-;Capslock & f2::Run https://inbox.google.com	;Open up inbox
-;Capslock & f3::Run https://play.google.com/music/listen#/now ;Open up music
-;Capslock & f4::Run https://play.pocketcasts.com/web#/podcasts/new_releases ;Open up podcasts
-;inbox := "https://inbox.google.com"
-;Capslock & f5::Run C:\Users\Austin\AppData\Local\Google\Chrome SxS\Application\chrome.exe
-;Capslock & K::Run C:\Users\Austin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Accessibility\On-Screen Keyboard.lnk
 
-;Capslock & f2::Sb_CurWinTop()
-;Capslock & f3::Sb_CurWinBot()
 
-;;;;;	HOTSTRINGS	;;;;;
-::ee::akathol@gmail.com						;DOUBLE E + TAB SENDS EMAIL ADDRESS
-::jj::akathol@j2interactive.com				;DOUBLE J + TAB SENDS EMAIL ADDRESS
-::nn::
-	Fn_Date("yyyyMMddhhmmss")				;DOUBLE N + TAB SENDS CURRENT DATE
-	return
-::dd::
-	Fn_Date("yyyyMMdd")
-	return
-::tt::
-	Fn_Date("ddd MM-dd-yyyy h:mm tt")
-	return
 
 
 ;;;;;	FUNCTIONS	;;;;;
-Sb_SetupTray() {	;SETS THE TRAY ICON, ADDS AN OPTION TO RUN THE SCRIPT FROM THE TRAY
-	Menu, Tray, Icon, ico\h.ico,,1					;default is headphones icon
-	Menu, Tray, NoStandard						;?
-	Menu, Tray, Add, &Switch Playback Device (shift+caps), LShift & Capslock	;add tray option
-	Menu, Tray, Add, &Snipping Tool (ctrl+caps), LCtrl & Capslock		;add tray option
-	Menu, Tray, Add, &Speak (highlight-caps), Capslock				;add tray option
-	;Menu, Tray, Add, &Suspend hotkeys/strings (win+caps), #Capslock				;add tray option
-	Menu, Tray, Add, &Now (nn) date (dd) time (tt) email (ee), Capslock				;add tray option
-	Menu, Tray, Add, 						;add blank line
-	Menu, Tray, Standard						;?
-	Menu, Tray, Default, &Switch Playback Device (shift+caps)			;default option is new option
-	Return
-}
-
 Sb_ToggleSwitch() {
 	Global SwitchAudio := !SwitchAudio
 	VA_SetDefaultEndpoint("playback:" (SwitchAudio ? 1 : 2), 0)
@@ -90,18 +62,6 @@ Sb_TogDisableAll() {
 	else {
 		TrayTip, Tray, HOTKEYS ACTVE
 	}
-}
-
-Sb_Snip() {
-	If WinExist("Snipping Tool")
-	{
-		IfWinActive, Snipping Tool 
-		{
-			Fn_SaveSnip()
-		} else Fn_ActivateStartSnip()
-	} else Fn_OpenSnippingTool()
-	return
-
 }
 
 Sb_Speak() {
@@ -156,37 +116,6 @@ Sb_VoiceSlower() {
 	}
 	TTS(Voice, "SetRate", rate)
 	TTS(Voice, "ToggleSpeak", rate)
-}
-
-Fn_SaveSnip() {
-	Send ^s
-	Sleep, 450
-	FormatTime, CurrentDate,, yyyyMMddhhmmss
-	SendInput %CurrentDate%
-	Sleep, 200
-	Send !s
-	Sleep, 200
-	WinClose, Snipping Tool
-}
-
-Fn_OpenSnippingTool() {
-	Run %windir%\System32\SnippingTool.exe
-	WinWait, Snipping Tool
-	WinActivate, Snipping Tool
-	Send !n
-	Send r
-}
-
-Fn_ActivateStartSnip() {
-	WinActivate, Snipping Tool
-	WinWaitActive, Snipping Tool
-	Send !n
-	Send r
-}
-
-Fn_Date(format) {
-	FormatTime, CurrentDate,, %format%
-	SendInput %CurrentDate%
 }
 
 Sb_CurWinTop() {
