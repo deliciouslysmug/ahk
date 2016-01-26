@@ -1,7 +1,20 @@
-﻿SetBatchLines -1									;Go as fast as CPU will allow
+﻿;;;;;		Main AHK Script								
+;;;;;		by Austin Kathol									
+;;;;;		Tue 01-26-2016 9:15 AM
+;;;;;		v1.0
+
+;;;;;	INITIALIZE	;;;;;
+#NoEnv
 #SingleInstance Force								;Only one of these scripts can be run at a time
 #Persistent											;this keeps the script running if no hotkeys are set (though one is)
 #NoTrayIcon
+SetBatchLines -1									;Go as fast as CPU will allow
+
+;;;;;	REFERENCE	;;;;;
+; ^ - ctrl
+; # - win
+; ! - alt
+; + - shift
 
 ;;;;;	HOTKEYS	;;;;;
 ^Right::Send, {LCtrl down}{tab}{LCtrl up}	;CTRL + RIGHT (next tab)
@@ -38,6 +51,7 @@ Capslock & f4::Run https://play.pocketcasts.com/web#/podcasts/new_releases ;Open
 	TextMenu("±,÷,×,¹,²,³,ƒ,∫,∑,∞,≈,≠")
 	Return
 
+;;;;;	FUNCTIONS	;;;;;
 Fn_Date(format) {
 	FormatTime, CurrentDate,, %format%
 	SendInput %CurrentDate%
