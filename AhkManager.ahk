@@ -9,6 +9,7 @@
 #SingleInstance Force
 Sb_SetIcon()
 DetectHiddenWindows, On
+SetTitleMatchMode 2  ; Avoids the need to specify the full path of the file below.
 SelfID := WinExist( A_ScriptFullPath " ahk_class AutoHotkey")
 Menu, Tray, NoStandard
 WinGet, AList, List, ahk_class AutoHotkey
@@ -50,12 +51,30 @@ CapsLock & f1::
 ;;;;;	FUNCTIONS	;;;;;
 Sb_TogDisableAll() {
 	Global AllOff := !AllOff
+	SelfID := WinExist( A_ScriptFullPath " ahk_class AutoHotkey")
 	if (AllOff) {
 		;TrayTip, Tray, HOTKEYS INACTIVE
+		DetectHiddenWindows, On 
+		WinGet, AList, List, ahk_class AutoHotkey
+		Loop %AList% 
+		{ 
+			ID := AList%A_Index%
+			IfEqual, ID, %SelfID%, Continue
+			WinGetTitle, ATitle, ahk_id %ID%
+			PostMessage,0x111,65305,,,%ATitle%
+		}
 		Menu, Tray, Icon, ico\0fill.ico,,1
 	} 
 	else {
 		;TrayTip, Tray, HOTKEYS ACTVE
+		WinGet, AList, List, ahk_class AutoHotkey
+		Loop %AList% 
+		{ 
+			ID := AList%A_Index%
+			IfEqual, ID, %SelfID%, Continue
+			WinGetTitle, ATitle, ahk_id %ID%
+			PostMessage,0x111,65305,,,%ATitle%
+		}
 		Sb_SetIcon()
 	}
 }

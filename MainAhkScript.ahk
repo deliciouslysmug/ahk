@@ -8,7 +8,7 @@
 #SingleInstance Force								;Only one of these scripts can be run at a time
 #Persistent											;this keeps the script running if no hotkeys are set (though one is)
 #NoTrayIcon
-SetBatchLines -1									;Go as fast as CPU will allow
+;SetBatchLines -1									;Go as fast as CPU will allow
 
 ;;;;;	REFERENCE	;;;;;
 ; ^ - ctrl

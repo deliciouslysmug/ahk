@@ -6,7 +6,7 @@
 
 ;;;;;	INITIALIZE	;;;;;
 #NoEnv
-SetBatchLines -1									;Go as fast as CPU will allow
+;SetBatchLines -1									;Go as fast as CPU will allow
 #SingleInstance Force								;Only one of these scripts can be run at a time
 #include ahk-lib\VA.ahk										;VA.ahk is needed to be in the same folder as this script
 #include ahk-lib\TTS.ahk									;TTS.ahk is needed for text to speech tools
