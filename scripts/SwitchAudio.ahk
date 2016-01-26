@@ -4,6 +4,10 @@
 ;;;;;		v1.1
 ;;;;;	Update 20160126: Remove obsolete functions. Break out hotkeys and hotstrings to separate ahks.
 
+;;;;;	HARDWARE CHECK	;;;;;
+if (A_ComputerName != "QUARTER")
+	ExitApp
+
 ;;;;;	INITIALIZE	;;;;;
 #NoEnv
 ;SetBatchLines -1									;Go as fast as CPU will allow
@@ -14,7 +18,6 @@
 Global Voice := ComObjCreate("SAPI.SpVoice")		;Define the Voice variable
 Global rate := 2									;Set default rate to 2 "kinda fast"
 TTS(Voice, "SetRate", rate)							;Set default rate to 2 "kinda fast"
-TTS(Voice, "SetVoice", "Microsoft Zira Desktop")	;Change to female voice
 
 ;;;;;	SETUP MENU	;;;;;
 Menu, Tray, Icon, ico\h.ico,,1					;default is headphones icon

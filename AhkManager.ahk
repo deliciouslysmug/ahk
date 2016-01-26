@@ -20,7 +20,7 @@ Loop %AList% {
                WinGetTitle, ATitle, ahk_id %ID%
                StringSplit, ATitle, ATitle, -
                SplitPath, ATitle1, Name
-               StringUpper, Name, Name
+               ;StringUpper, Name, Name
 
                Menu,%Name%,Add, %A_Index%:Reload , MenuChoice
                Menu,%Name%,Add, %A_Index%:Edit   , MenuChoice
@@ -78,19 +78,6 @@ Sb_TogDisableAll() {
 		Sb_SetIcon()
 	}
 }
-
-MenuChoice:
-	StringSplit, F,A_ThisMenuItem, :
-	IfEqual,F2,Reload , PostMessage,0x111,65400,0,,% "ahk_id" AList%F1%
-	IfEqual,F2,Edit   , PostMessage,0x111,65401,0,,% "ahk_id" AList%F1%
-	IfEqual,F2,Pause  , PostMessage,0x111,65403,0,,% "ahk_id" AList%F1%
-	IfEqual,F2,Suspend, PostMessage,0x111,65404,0,,% "ahk_id" AList%F1%
-	IfEqual,F2,Exit   , PostMessage,0x111,65405,0,,% "ahk_id" AList%F1%
-	Return
-
-ReloadScript:
-	Reload
-	Return
 	
 Sb_SetIcon() {
 	DetectHiddenWindows, On 
@@ -113,10 +100,25 @@ Sb_SetIcon() {
 	Menu, Tray, Icon, ico\%setIcon%,,1
 }
   
+MenuChoice:
+	StringSplit, F,A_ThisMenuItem, :
+	IfEqual,F2,Reload , PostMessage,0x111,65400,0,,% "ahk_id" AList%F1%
+	IfEqual,F2,Edit   , PostMessage,0x111,65401,0,,% "ahk_id" AList%F1%
+	IfEqual,F2,Pause  , PostMessage,0x111,65403,0,,% "ahk_id" AList%F1%
+	IfEqual,F2,Suspend, PostMessage,0x111,65404,0,,% "ahk_id" AList%F1%
+	IfEqual,F2,Exit   , PostMessage,0x111,65405,0,,% "ahk_id" AList%F1%
+	Return
+
+ReloadScript:
+	Reload
+	Return 
+  
 StartAll:
-	Run, SwitchAudio.ahk
-	Run, MainAhkScript.ahk
-	Run, SuperSnip.ahk
+	Loop %A_WorkingDir%\scripts\*.ahk
+	{
+		if (A_LoopFileFullPath != A_ScriptFullPath)
+			Run, %A_LoopFileFullPath%
+	}
 	Reload
 	Return
 
@@ -133,11 +135,15 @@ QuitAll:
 	Return
 	
 RL:
-	Run, rlAHK.ahk
+	ifExist games\rlAHK.ahk
+		Run, games\rlAHK.ahk
 	Reload
 	Return
 	
 FFVIII:
-	Run, ffviiiAHK.ahk
+	ifExist games\ffviiiAHK.ahk
+		Run, games\ffviiiAHK.ahk
 	Reload
-	Return	
+	Return
+	
+	
