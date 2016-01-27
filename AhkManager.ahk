@@ -7,38 +7,9 @@
 ;;;;;	INITIALIZE	;;;;;
 #Persistent
 #SingleInstance Force
-Sb_SetIcon()
-DetectHiddenWindows, On
-SetTitleMatchMode 2  ; Avoids the need to specify the full path of the file below.
-SelfID := WinExist( A_ScriptFullPath " ahk_class AutoHotkey")
-Menu, Tray, NoStandard
-WinGet, AList, List, ahk_class AutoHotkey
-Loop %AList% {
-               ID := AList%A_Index%
-               IfEqual, ID, %SelfID%, Continue
-  
-               WinGetTitle, ATitle, ahk_id %ID%
-               StringSplit, ATitle, ATitle, -
-               SplitPath, ATitle1, Name
-               ;StringUpper, Name, Name
-
-               Menu,%Name%,Add, %A_Index%:Reload , MenuChoice
-               Menu,%Name%,Add, %A_Index%:Edit   , MenuChoice
-               Menu,%Name%,Add, %A_Index%:Pause  , MenuChoice
-               Menu,%Name%,Add, %A_Index%:Suspend, MenuChoice
-               Menu,%Name%,Add, %A_Index%:Exit   , MenuChoice
-               Menu, Tray, Add, %Name%, :%Name%
-             }
-Menu, Tray, Add
-Menu, Tray, Add, Quick Reload, ReloadScript
-Menu, Tray, Add, Start All Scripts, StartAll
-Menu, Tray, Add, Quit All Scripts, QuitAll
-Menu, Tray, Add, Rocket League, RL
-Menu, Tray, Add, FFVIII, FFVIII
-Menu, Tray, Add
-Menu, Tray, Default, Quick Reload
-Menu, Tray, Click, 1
-Menu, Tray, Standard
+DetectHiddenWindows, On 
+SetTitleMatchMode, 2
+Sb_SetMenu()
 
 Return
 
@@ -49,6 +20,46 @@ CapsLock & f1::
 	return
 
 ;;;;;	FUNCTIONS	;;;;;
+Sb_SetMenu() {
+	Menu, Tray, DeleteAll
+	SelfID := WinExist( A_ScriptFullPath " ahk_class AutoHotkey")
+	Menu, Tray, NoStandard
+	WinGet, AList, List, ahk_class AutoHotkey
+	Loop %AList% {
+		ID := AList%A_Index%
+		IfEqual, ID, %SelfID%, Continue
+		WinGetTitle, ATitle, ahk_id %ID%
+		StringSplit, ATitle, ATitle, -
+		SplitPath, ATitle1, Name
+		StringSplit, Name, Name, `.
+		Name = %Name1%
+		;StringUpper, Name, Name
+		Menu,%Name%,Add, %Name%:Reload , MenuChoice
+		Menu,%Name%,Add, %Name%:Edit   , MenuChoice
+		Menu,%Name%,Add, %Name%:Pause  , MenuChoice
+		Menu,%Name%,Add, %Name%:Suspend, MenuChoice
+		Menu,%Name%,Add, %Name%:Exit   , MenuChoice
+		
+;		Menu,%Name%,Add, %A_Index%:Reload , MenuChoice
+;		Menu,%Name%,Add, %A_Index%:Edit   , MenuChoice
+;		Menu,%Name%,Add, %A_Index%:Pause  , MenuChoice
+;		Menu,%Name%,Add, %A_Index%:Suspend, MenuChoice
+;		Menu,%Name%,Add, %A_Index%:Exit   , MenuChoice
+		Menu, Tray, Add, %Name%, :%Name%
+	}
+	Menu, Tray, Add
+	Menu, Tray, Add, Quick Reload, Sb_ReloadScript
+	Menu, Tray, Add, Start All Scripts, Sb_StartAll
+	Menu, Tray, Add, Quit All Scripts, Sb_QuitAll
+	Menu, Tray, Add, Rocket League, RL
+	Menu, Tray, Add, FFVIII, FFVIII
+	Menu, Tray, Add
+	Menu, Tray, Default, Quick Reload
+	Menu, Tray, Click, 1
+	Menu, Tray, Standard
+	Sb_SetIcon()
+}
+
 Sb_TogDisableAll() {
 	Global AllOff := !AllOff
 	SelfID := WinExist( A_ScriptFullPath " ahk_class AutoHotkey")
@@ -80,7 +91,6 @@ Sb_TogDisableAll() {
 }
 	
 Sb_SetIcon() {
-	DetectHiddenWindows, On 
 	WinGet, List, List, ahk_class AutoHotkey 
 	NumAhk := 0
 	Loop %List% 
@@ -102,27 +112,30 @@ Sb_SetIcon() {
   
 MenuChoice:
 	StringSplit, F,A_ThisMenuItem, :
-	IfEqual,F2,Reload , PostMessage,0x111,65400,0,,% "ahk_id" AList%F1%
-	IfEqual,F2,Edit   , PostMessage,0x111,65401,0,,% "ahk_id" AList%F1%
-	IfEqual,F2,Pause  , PostMessage,0x111,65403,0,,% "ahk_id" AList%F1%
-	IfEqual,F2,Suspend, PostMessage,0x111,65404,0,,% "ahk_id" AList%F1%
-	IfEqual,F2,Exit   , PostMessage,0x111,65405,0,,% "ahk_id" AList%F1%
+	IfEqual,F2,Reload , PostMessage,0x111,65400,0,,%F1% ahk_class AutoHotkey
+	IfEqual,F2,Edit   , PostMessage,0x111,65401,0,,%F1% ahk_class AutoHotkey
+	IfEqual,F2,Pause  , PostMessage,0x111,65403,0,,%F1% ahk_class AutoHotkey
+	IfEqual,F2,Suspend, PostMessage,0x111,65404,0,,%F1% ahk_class AutoHotkey
+	IfEqual,F2,Exit   , PostMessage,0x111,65405,0,,%F1% ahk_class AutoHotkey
+	Sb_ReloadScript()
 	Return
 
-ReloadScript:
+Sb_ReloadScript() {
 	Reload
-	Return 
+}
   
-StartAll:
+Sb_StartAll() {
 	Loop %A_WorkingDir%\scripts\*.ahk
 	{
 		if (A_LoopFileFullPath != A_ScriptFullPath)
 			Run, %A_LoopFileFullPath%
 	}
-	Reload
-	Return
+	Sleep, 200
+	Sb_SetMenu()
+	Sb_SetIcon()
+}
 
-QuitAll:
+Sb_QuitAll() {
 	DetectHiddenWindows, On 
 	WinGet, List, List, ahk_class AutoHotkey 
 	Loop %List% 
@@ -131,8 +144,10 @@ QuitAll:
 		If ( PID <> DllCall("GetCurrentProcessId") ) 
 			PostMessage,0x111,65405,0,, % "ahk_id " List%A_Index% 
 	}
-	Reload
-	Return
+	Sleep, 200
+	Sb_SetMenu()
+	Sb_SetIcon()
+}
 	
 RL:
 	ifExist games\rlAHK.ahk
