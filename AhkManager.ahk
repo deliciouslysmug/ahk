@@ -24,6 +24,7 @@ Sb_SetMenu() {
 	Menu, Tray, DeleteAll
 	SelfID := WinExist( A_ScriptFullPath " ahk_class AutoHotkey")
 	Menu, Tray, NoStandard
+	
 	WinGet, AList, List, ahk_class AutoHotkey
 	Loop %AList% {
 		ID := AList%A_Index%
@@ -33,26 +34,34 @@ Sb_SetMenu() {
 		SplitPath, ATitle1, Name
 		StringSplit, Name, Name, `.
 		Name = %Name1%
-		;StringUpper, Name, Name
 		Menu,%Name%,Add, %Name%:Reload , MenuChoice
 		Menu,%Name%,Add, %Name%:Edit   , MenuChoice
 		Menu,%Name%,Add, %Name%:Pause  , MenuChoice
 		Menu,%Name%,Add, %Name%:Suspend, MenuChoice
 		Menu,%Name%,Add, %Name%:Exit   , MenuChoice
-		
-;		Menu,%Name%,Add, %A_Index%:Reload , MenuChoice
-;		Menu,%Name%,Add, %A_Index%:Edit   , MenuChoice
-;		Menu,%Name%,Add, %A_Index%:Pause  , MenuChoice
-;		Menu,%Name%,Add, %A_Index%:Suspend, MenuChoice
-;		Menu,%Name%,Add, %A_Index%:Exit   , MenuChoice
 		Menu, Tray, Add, %Name%, :%Name%
 	}
 	Menu, Tray, Add
 	Menu, Tray, Add, Quick Reload, Sb_ReloadScript
 	Menu, Tray, Add, Start All Scripts, Sb_StartAll
 	Menu, Tray, Add, Quit All Scripts, Sb_QuitAll
-	Menu, Tray, Add, Rocket League, RL
-	Menu, Tray, Add, FFVIII, FFVIII
+	
+	Loop %A_WorkingDir%\scripts\*.ahk
+	{
+		if (A_LoopFileFullPath != A_ScriptFullPath) {
+			Menu, Scripts, Add, %A_LoopFileFullPath%, StartScript
+		}
+		Menu, Tray, Add, Scripts, :Scripts
+	}
+	
+	Loop %A_WorkingDir%\extra\*.ahk
+	{
+		if (A_LoopFileFullPath != A_ScriptFullPath) {
+			Menu, Extra, Add, %A_LoopFileFullPath%, StartScript
+		}
+		Menu, Tray, Add, Extra, :Extra
+	}
+	
 	Menu, Tray, Add
 	Menu, Tray, Default, Quick Reload
 	Menu, Tray, Click, 1
@@ -148,17 +157,10 @@ Sb_QuitAll() {
 	Sb_SetMenu()
 	Sb_SetIcon()
 }
-	
-RL:
-	ifExist games\rlAHK.ahk
-		Run, games\rlAHK.ahk
-	Reload
-	Return
-	
-FFVIII:
-	ifExist games\ffviiiAHK.ahk
-		Run, games\ffviiiAHK.ahk
-	Reload
+
+StartScript:
+	Run ,%A_ThisMenuItem%
+	Sb_ReloadScript()
 	Return
 	
 	
