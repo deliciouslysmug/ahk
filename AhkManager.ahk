@@ -45,6 +45,7 @@ Sb_SetMenu() {
 	Menu, Tray, Add, Quick Reload, Sb_ReloadScript
 	Menu, Tray, Add, Start All Scripts, Sb_StartAll
 	Menu, Tray, Add, Quit All Scripts, Sb_QuitAll
+	Menu, Tray, Add, Restart All Scripts, Sb_RestartAll
 	
 	Loop %A_WorkingDir%\scripts\*.ahk
 	{
@@ -156,6 +157,11 @@ Sb_QuitAll() {
 	Sleep, 200
 	Sb_SetMenu()
 	Sb_SetIcon()
+}
+
+Sb_RestartAll() {
+	Sb_QuitAll()
+	Sb_Startall()
 }
 
 StartScript:

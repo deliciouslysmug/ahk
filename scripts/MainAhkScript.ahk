@@ -30,17 +30,8 @@ Capslock & f4::Run https://play.pocketcasts.com/web#/podcasts/new_releases ;Open
 ;Capslock & f3::Sb_CurWinBot()
 
 ;;;;;	HOTSTRINGS	;;;;;
-::ee::akathol@gmail.com						;DOUBLE E + TAB SENDS EMAIL ADDRESS
-::jj::akathol@j2interactive.com				;DOUBLE J + TAB SENDS EMAIL ADDRESS
-::nn::
-	Fn_Date("yyyyMMddhhmmss")				;DOUBLE N + TAB SENDS CURRENT DATE
-	return
-::dd::
-	Fn_Date("yyyyMMdd")
-	return
-::tt::
-	Fn_Date("ddd MM-dd-yyyy h:mm tt")
-	return
+::e@::akathol@gmail.com						;DOUBLE E + TAB SENDS EMAIL ADDRESS
+::j@::akathol@j2interactive.com				;DOUBLE J + TAB SENDS EMAIL ADDRESS
 :*?:c`t::
 	TextMenu("¢,£,€,¥")
 	Return
@@ -51,6 +42,100 @@ Capslock & f4::Run https://play.pocketcasts.com/web#/podcasts/new_releases ;Open
 	TextMenu("±,÷,×,¹,²,³,ƒ,∫,∑,∞,≈,≠")
 	Return
 
+:c:NNN::
+	Fn_Date("yyyyMMddhhmmss")				;DOUBLE N + TAB SENDS CURRENT DATE
+	return
+:c:DDD::
+	Fn_Date("yyyyMMdd")
+	return
+:c:TTT::
+	Fn_Date("ddd MM-dd-yyyy h:mm tt")
+	return
+:c:DD+::
+	InputBox, add, "Enter days to add","value: ",,300,,,,,2,0
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, d
+	FormatTime, NewTime2, %NewTime%, yyyyMMdd
+	SendInput, %NewTime2%
+	Return
+:c:DD-::
+	InputBox, add, "Enter days to add","value: ",,300,,,,,2,0
+	add *= -1
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, d
+	FormatTime, NewTime2, %NewTime%, yyyyMMdd
+	SendInput, %NewTime2%
+	Return
+:c:NN+::
+	InputBox, add, "Enter days to add","value: ",,300,,,,,2,0
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, minute
+	FormatTime, NewTime2, %NewTime%, yyyyMMddHHmmss
+	SendInput, %NewTime2%
+	Return
+:c:NN-::
+	InputBox, add, "Enter days to add","value: ",,300,,,,,2,0
+	add *= -1
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, minute
+	FormatTime, NewTime2, %NewTime%, yyyyMMddHHmmss
+	SendInput, %NewTime2%
+	Return
+	
+:c:mm+::
+	InputBox, add, "minutes to add","value: ",,300,,,,,2,0
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, minute
+	FormatTime,NewTime2,%NewTime%,hh:mm tt
+	SendInput %NewTime2%
+	return
+	
+:c:hh+::
+	InputBox, add, "hours to add","value: ",,50,,,,,2,0
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, hour
+	FormatTime,NewTime2,%NewTime%,hh:mm tt
+	SendInput %NewTime2%
+	return
+
+:c:dd+::
+	InputBox, add, "Enter days to add","value: ",,300,,,,,2,0
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, d
+	FormatTime, NewTime2, %NewTime%, ddd MM-dd-yyyy
+	SendInput, %NewTime2%
+	Return
+
+:c:mm-::
+	InputBox, add, "minutes to add","value: ",,300,,,,,2,0
+	add *= -1
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, minute
+	FormatTime,NewTime2,%NewTime%,hh:mm tt
+	SendInput %NewTime2%
+	return
+
+:c:hh-::
+	InputBox, add, "hours to add","value: ",,300,,,,,2,0
+	add *= -1
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, hour
+	FormatTime,NewTime2,%NewTime%,hh:mm tt
+	SendInput %NewTime2%
+	return
+	
+:c:dd-::
+	InputBox, add, "Enter days to add","value: ",,300,,,,,2,0
+	add *= -1
+	NewTime := A_Now
+	EnvAdd, NewTime, %add%, d
+	FormatTime, NewTime2, %NewTime%, ddd MM-dd-yyyy
+	SendInput, %NewTime2%
+	Return
+	
+
+	
+	
 ;;;;;	FUNCTIONS	;;;;;
 Fn_Date(format) {
 	FormatTime, CurrentDate,, %format%
